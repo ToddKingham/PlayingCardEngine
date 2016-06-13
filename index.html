@@ -1,0 +1,179 @@
+<html>
+<head>
+	<title>Cards</title>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
+	<script src="PlayingCards.js?_=3"></script>
+	<style>
+		*{margin:0px;padding:0px;}
+		body{color:black;}
+		ol{margin:5px;padding: 5px;}
+		ol.cards{}
+		ol.cards li{display:inline-block;background-color:white;border:1px solid green;width:40px;height:55px;margin:3px;}
+		ol.cards li span{display:block;text-align: center;font-size:22px;}
+		.red{color:red;}
+		.black{color:black;}
+		h1 {font-size:18px;}
+
+div#content {border:1px solid blue;display:table;width:100%;}
+div#table {border:1px solid black;display:table-cell;width:80%;}
+aside {border:2px solid green;display:table-cell;width:20%;}
+
+	</style>
+</head>
+<body>
+
+<div id="content">
+	<div id="table">
+		<section id="deck-container">
+			<h1>Deck</h1>
+			<ol id="deck-list" class="cards"></ol>
+		</section>
+		<section id="hands-container">
+			<h1>Hands</h1>
+			<ol id="hands-list"></ol>
+		</section>
+		<section id="discard-container">
+			<h1>Discard</h1>
+			<ol id="discard-list" class="cards"></ol>
+		</section>
+
+		
+
+		
+
+		
+
+	</div>
+	<aside>action list
+		<ul>
+			<li><a href="javascript:DECK.init()">Start Over</a></li>
+			<li><a href="javascript:DECK.shuffle()">Shuffle</a></li>
+		</ul>
+		<form action="" onSubmit="return DECK.deal(this);">
+			<div>
+				<label for=""># of hands</label>
+				<input type="text" name="hands" value="4">
+			</div>
+			<div>
+				<label for="">cards per hand</label>
+				<input type="text" name="cards" value="5">
+			</div>
+			<button>Deal</button>
+		</form>
+
+		<!-- <form action="">
+	<div>
+		<label for="">Set Number of Hands</label><input id="set-hands" type="text" name="hands">	
+	</div>
+	<div>
+		<label for="">Number of Cards to Deal</label><input id="deal-count" type="text" name="deal-count" >	
+	</div>
+	<div>
+		<a id="doDeal" href="">Deal</a>
+	</div>
+</form> -->
+	</aside>	
+</div>
+
+
+
+
+
+<script>
+			var DECK = {};
+			(function(engine){
+				var CARDS;
+
+				var methods = {
+					display_methods: {
+						deck: function(){
+							var cards = CARDS.get('deck');
+							var ol = document.getElementById('deck-list');
+							methods.laydownCards(ol,cards);
+						},
+						hands: function(){
+							var cards = CARDS.get('hands');
+							var hands;
+							var ol = document.getElementById('hands-list');
+								ol.innerHTML = '';
+							for(var i=0;i<cards.length;i++){
+								 li = document.createElement('LI');
+					 			 li.innerHTML = '<a href="javascript:DECK.draw('+i+')">Draw</a><ol class="cards"></ol>';
+					 			 ol.appendChild(li); 
+					 			 hands = ol.getElementsByClassName('cards');
+					 			 methods.laydownCards(hands[hands.length-1],cards[i]);
+					 			 //.appendChild('<li>draw</li>');
+					 			 var thisHand = hands[hands.length-1].getElementsByTagName('li');
+					 			 
+					 			 for(var card=0;card<thisHand.length;card++){
+					 			 	thisHand[card].addEventListener('dblclick',(function(i,card){return function(){DECK.discard(i,card);};})(i,card),false);
+					 			 }
+					 			 
+
+					 		}
+
+						},
+						discard: function(){
+							var cards = CARDS.get('discard');
+							var ol = document.getElementById('discard-list');
+							methods.laydownCards(ol,cards);
+						},
+					},
+					laydownCards: function(ol,cards){
+						ol.innerHTML = '';
+						for(var i=0;i<cards.length;i++){
+				 			li = document.createElement('LI');
+				 			li.innerHTML = cards[i].index+'<span>'+cards[i].symbol+'</span>';
+				 			li.className = cards[i].color;
+				 			ol.appendChild(li);
+				 		}
+					}
+				};
+
+				this.init = function(){
+					CARDS = new engine({packs:1,jokers:true});
+					this.syncUI();
+				};
+				this.shuffle = function(){
+			 		CARDS.shuffle(['wash','riffle','riffle','box','riffle','cut']);
+			 		this.syncUI();
+				};
+				this.deal = function(form){
+					CARDS.deal(form.hands.value,form.cards.value);
+					this.syncUI();
+					return false;
+				};
+				this.draw = function(p){
+					CARDS.draw(p,1);
+					this.syncUI();
+				};
+				this.discard = function(p,c){
+					CARDS.discard(p,c);
+					this.syncUI();
+				};
+
+
+				this.syncUI = function(){
+					for(var x in methods.display_methods){
+						methods.display_methods[x]();
+					}
+				};
+
+				this.init();
+
+			}).apply(DECK,[PlayingCards]);
+			
+
+
+
+
+
+
+			
+
+		
+		
+	</script>
+</body>
+</html>
