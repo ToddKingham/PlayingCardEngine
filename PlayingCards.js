@@ -25,6 +25,7 @@ function PlayingCards(obj){
 
 	var CARDS = {
 		deck:[],
+		stock:[],
 		discard:[],
 		hands:[],
 		table:[], // maybe we will use this when "laying down" in games such as rummy or even poker games like texas hold 'em
@@ -93,7 +94,8 @@ function PlayingCards(obj){
 							type: details[t].card[card].type,
 							suit: suit,
 							color: details[t].suit[suit].color,
-							symbol: details[t].suit[suit].symbol
+							symbol: details[t].suit[suit].symbol,
+							visible: false
 						});
 					}
 				}
@@ -121,7 +123,7 @@ function PlayingCards(obj){
 		},
 
 		setHands : function(n){
-			CARDS.hands = [];
+			//CARDS.hands = [];
 			for(var i=0;i<n;i++){
 				CARDS.hands.push([]);
 			}
@@ -140,11 +142,30 @@ function PlayingCards(obj){
 		},
 
 		cutAt: function(n,p){
-			return [Math.floor,Math.ceil][methods.zeroOrOne()](n*p) + methods.plusOrMinus(3);
+			return [Math.floor,Math.ceil][methods.zeroOrOne()](n*p) + methods.plusOrMinus(2);
+		},
+
+		merge: function(){
+			var result = [];
+			for(var i=0;i<arguments.length;i++){
+				result = result.concat(arguments[i].splice(0,arguments[i].length));
+			}
+			return result;
+		},
+
+		flip: function(obj){
+			CARDS[obj] = CARDS[obj].reverse();
+		},
+
+		isArray: function(obj){
+			return Object.prototype.toString.call( obj ) === '[object Array]';
 		}
 	};
 
-	this.shuffle = function(type){
+
+
+
+	this.shuffle = function(type,obj='deck'){
 		type = type || ['riffle'];
 		types = {
 			wash: function(p){
@@ -156,30 +177,27 @@ function PlayingCards(obj){
 				return result;
 			},
 			riffle: function(p){
-				var result = [];
-				var next_left,next_right;
-				//var cutAt = 26;//Math.round(p.length/2) + ((methods.rando()%3)*[-1,1][methods.rando()%2]);
-				var idx1 = methods.rando()%2;
-				var idx2 = (idx1+1)%2;
-				var halves = [[],[]];
-					halves[idx1] = p.splice(0,methods.cutAt(p.length,.5)).reverse();
-					halves[idx2] = p.reverse();
-
-				// TODO: fix this so percentages come out correctly. see reaadme.md
-				var afew = function(){
-					var a = [1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,3,2,1,2,1,2,1,2,1,2,2,1,2,1,2,1,2,3,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1];
-					return a[methods.rando()%(a.length-1)];
-				};
-
+				var result = [],
+					halves = [
+						p.splice(0,methods.cutAt(p.length,.5)),
+						p
+					],
+					afew = function(){
+						var a = [1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,3,2,1,2,1,2,1,2,1,2,2,1,2,1,2,1,2,3,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1];
+						return a[methods.rando()%(a.length-1)];
+					},
+					idx1 = halves[0].length<halves[1].length?0:1,
+					idx2 = (idx1+1)%2,
+					next,
+					next_up = halves[0].length>halves[1].length?0:1;
+				
 				while(halves[idx1].length + halves[idx2].length){
-					left_few = afew();
-					right_few = afew();
-					next_left = halves[idx1].splice(0,left_few);
-					next_right = halves[idx2].splice(0,right_few);
-					result = result.concat(next_right).concat(next_left);
-				}
-
-				return result.reverse();
+					next = halves[next_up].splice(halves[next_up].length-afew(),halves[next_up].length);
+					result = next.concat(result);
+					next_up = (next_up+1)%2;
+		        }
+        
+				return result;
 			},
 			box: function(p){
 				var result = [];
@@ -199,22 +217,27 @@ function PlayingCards(obj){
 		}
 
 		for(var i=0;i<type.length;i++){
-			CARDS.deck = types[type[i]].apply(this,[CARDS.deck]);
+			CARDS[obj] = types[type[i]].apply(this,[CARDS[obj]]);
 		}
 	};
 
 	this.deal = function(h,n){
-		var d = CARDS.dealer+1;
-		var card;
-		methods.setHands(h);
-		for(var i=d;i<(h*n)+d;i++){
-			this.draw(i%h,1);
+		var result = h*n <= CARDS.deck.length;
+		if(result){
+			var d = CARDS.dealer+1;
+			var card;
+			methods.setHands(h);
+			for(var i=d;i<(h*n||0)+d;i++){
+				this.draw(i%h,1,CARDS.deck);
+			}
+			CARDS.stock = methods.merge(CARDS.stock,CARDS.deck);
 		}
+		return result;
 	};
-
+	
 	this.draw = function(h,n,obj){
-		var cards = (typeof obj === 'object' ? obj : CARDS[obj||'deck']).splice(0,n);
-		CARDS.hands[h] = CARDS.hands[h].concat(cards);
+		var cards = (typeof obj === 'object' ? obj : CARDS[obj||'stock']).splice(0,n);
+		CARDS.hands[h] = cards.concat(CARDS.hands[h]);
 	};
 
 	this.discard = function(h,ids){
@@ -225,19 +248,43 @@ function PlayingCards(obj){
 		}
 	};
 
-	this.burn = function(n){
-		var ids = [];
-		for( var i=0; i<n; i++ ){
-		  ids.push(i);
+	this.burn = function(n=1,obj='stock'){
+		CARDS.discard = methods.merge(CARDS.discard,CARDS[obj].splice(0,n));
+	};
+
+	this.fold = function(n){
+		CARDS.discard = methods.merge(CARDS.hands[n],CARDS.discard);
+	};
+
+	this.give = function(src,dest,n=0,c=1){
+		var result;
+		c = typeof n === 'number' ? c : 1;
+		n = typeof n === 'number' ? [n] : n.sort().reverse();
+		for( var i=0; i<n.length; i++ ){
+			CARDS.hands[dest] = CARDS.hands[src].splice(n[i],c).concat(CARDS.hands[dest]);
 		}
-		this.discard(CARDS.deck,ids);
-	}
+	};
+
+	this.end = function(){
+		var collectedHands = methods.merge.apply(this,CARDS.hands); //apply syntax to avoid a loop
+		CARDS.deck = methods.merge(CARDS.deck,CARDS.stock,collectedHands,CARDS.discard);
+		CARDS.hands = [];
+	};
+
+	this.pickup = function(n,q){
+		CARDS.hands[n] = CARDS.discard.splice(0,q).concat(CARDS.hands[n]);
+	};
+
+	this.restock = function(f=false,s=[]){
+		if(f){ methods.flip('discard'); }
+		CARDS.stock = methods.merge(CARDS.stock,CARDS.discard);
+		if(s.length){ this.shuffle(s,'stock'); }
+	};
 
 	this.get = function(s,i){
 		var result = (typeof CARDS[s] !== 'undefined') ? (typeof CARDS[s][i] !== 'undefined') ? CARDS[s][i] : CARDS[s] : null;
 		return result;
 	};
-
 //remove before shipping
 	this.getParams = function(){
 		return params;

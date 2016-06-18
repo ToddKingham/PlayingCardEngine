@@ -1,0 +1,11 @@
+*{margin:0px;padding:0px;}
+body{color:black;}
+div#content {border:1px solid blue;display:table;width:100%;}
+div#table {border:1px solid black;display:table-cell;width:80%;}
+aside {border:2px solid green;display:table-cell;width:20%;}
+h1 {font-size:18px;clear:both;}
+
+
+#hands-container ol.cards {display:inline-block;}
+#hands-container ol.cards li{float:right;}
+#hands-container a {display:block;}
