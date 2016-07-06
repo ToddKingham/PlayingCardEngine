@@ -1,0 +1,102 @@
+* {margin:0px;padding:0px;position: relative;}
+body {background-color:green;margin:auto;}
+main {
+  border:3px solid yellow;
+  border-radius: 10px;
+  width:310px;
+  height:480px;
+  margin:10px auto;
+  padding:10px;
+  text-align: center;
+}
+
+aside {display:flex;height:100px}
+
+#foundations {flex-grow:1; display:flex;}
+#foundations .card,
+#deck .card {
+  left:0px;
+  position: absolute;
+  z-index: 1;
+}
+
+#deck {
+  flex-grow:1;
+  display:flex;
+  justify-content:
+  flex-end;
+}
+#stock {cursor: pointer;}
+#talon div {display:none;}
+#talon div:nth-child(1){display:block;z-index: 3}
+#talon div:nth-child(2){display:block;z-index: 2;left:-15px;}
+#talon div:nth-child(3){display:block;z-index: 1;left:-30px;}
+
+#tableau {
+  display:flex;
+}
+
+.cards {
+    background-color: #008F00;
+    border: 1px inset green;
+    border-radius: 5px;
+    display: flex;
+    height: 55px;
+    margin: 1px;
+    width: 40px;
+    flex-direction: column;
+}
+.cards .default {
+    color: #006f00;
+    font-size: 25px;
+    line-height: 55px;
+    text-align: center;
+    position: absolute;
+    z-index: 0;
+    width:100%;
+    left:0px;
+}
+.upcards,
+.downcards {
+  display: flex;
+  flex-direction: column;
+}
+
+.downcards .card {
+  margin-bottom:-50px;
+}
+.upcards .card {
+  margin-bottom:-35px;
+}
+
+.up {cursor: pointer;}
+
+#controls {
+    background-color: #006f00;
+    border-radius: 0 0 8px 8px;
+    bottom: 0;
+    height: 30px;
+    left: 0;
+    line-height: 30px;
+    position: absolute;
+    width: 100%;
+}
+
+#controls ul {
+  display:flex;
+  flex-direction: row;
+  list-style-type: none;
+  height:100%;
+}
+
+#controls ul li {
+  flex-grow: 1;
+  border-left:1px inset black;
+}
+#controls ul li:nth-child(1) {border-left:0px inset black;}
+
+#controls ul li a {
+    color: #ffffff;
+    display: block;
+    text-decoration: none;
+}

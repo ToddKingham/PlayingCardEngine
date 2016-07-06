@@ -1,8 +1,33 @@
-ol.cards{margin:5px;padding: 5px;}
-ol.cards li{float:left;list-style-type:none;background-color:red;border:1px solid green;width:40px;height:55px;margin:3px;}
-ol.cards li div { background-color: white; height: 100%; width: 100%;}
-ol.cards li div.down {display: none;}
-ol.cards li div.down :hover{display:block;}
-ol.cards li div span{display:block;text-align: center;font-size:22px;}
-.red{color:red;}
-.black{color:black;}
+.card {
+  border:1px solid white;
+  border-radius: 5px;
+  display:inline-block;
+  width:40px;
+  height:55px;
+  text-align:center;
+  box-shadow: 1px 1px 1px black;
+}
+.card span {display:block;}
+
+.card.red {color:red;}
+.card.black {color:black;}
+
+.card.down {background-color:blue;}
+.card.down span {display:none;}
+
+.card.up {
+  background-color:white;
+  border:1px solid black;
+}
+
+.card span.index {
+  font-size: 15px;
+  margin: 1px 0 0 2px;
+  padding: 1px;
+  text-align: left;
+}
+
+.card span.index.bottom {
+  transform: rotate(180deg);
+}
+.card span.suit {font-size:22px;}

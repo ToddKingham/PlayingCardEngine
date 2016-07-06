@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js"></script>
+
+	<script src="DeckMechanics.js?id=_1"></script>
+	
+	<style>
+		ol.cards li{display:inline-block; background-color:white; border:1px solid green; width:40px; height:55px; margin:3px;}
+		ol.cards li span{display:block; text-align:center; font-size:22px;}
+		
+		.red{color:red;}
+		.black{color:black;}
+	</style>
+
+</head>
+<body>
+	
+<h1>Hands</h1>
+<ol data-bind="foreach: { data: getDeck().hands, as: 'hand' }">
+    <li>
+        <ol class="cards" data-bind="foreach: { data:hand, as: 'card' }">
+            <li  data-bind="css: color" data-card="text: $data">
+            	<span data-bind="text: index"></span>
+            	<span data-bind="html: symbol"></span>
+            </li>
+        </ol>
+    </li>
+</ol>
+
+<h1>Pile</h1>
+<ol class="cards" data-bind="foreach: { data: getDeck().pile, as: 'pile' }">
+	<li  data-bind="css: color">
+		<span data-bind="text: index"></span>
+		<span data-bind="html: symbol"></span>
+	</li>
+</ol>
+
+<h1>Discard</h1>
+ 
+<script>
+
+	koPlayingCards = (function(deck){
+		var methods = {
+			sync: function(){
+				//figure out the ko sync stuff
+			}
+		};
+		return function(){
+			this.init = function(obj){deck.init(obj);};
+			this.shuffle = function(act){deck.init(act);};
+			this.deal = function(n){deck.deal(n);};
+			this.discard = function(){/* TODO: come up with this johnny */};
+			this.burn = function(n){deck.burn(n);};
+			this.setHands = function(n){deck.setHands(n);};
+			this.getDeck = function(){return deck.getDeck();};
+			this.get = function(s,i){return deck.get(s,i);};
+		};
+	})(new PlayingCards());
+
+console.log(koPlayingCards);
+
+	var DECK = new koPlayingCards();
+		DECK.init();
+		DECK.setHands(4);
+		
+		//DECK.shuffle(['wash','riffle','riffle','box','riffle','cut']);
+		//DECK.deal(5);
+
+    	ko.applyBindings(DECK);
+</script>
+
+</body>
+</html>

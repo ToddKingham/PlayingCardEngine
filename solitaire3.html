@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Solitaire</title>
+	<link rel="stylesheet" href="/css/cards.css">
+	<link rel="stylesheet" href="/css/solitaire3.css">
+
+	<script src="/js/cards/PlayingCards.js" defer></script>
+	<script src="/js/cards/Games/solitaire.js" defer></script>
+	<script src="/js/dragdrop.js" defer></script>
+	<script src="js/solitaireUI.js" defer></script>
+</head>
+
+<body>
+	<main>
+		<aside class="head">
+			<section id="foundations">
+				<article id="foundations_0" class="cards" data-default="&#9825;"></article>
+				<article id="foundations_1" class="cards" data-default="&#9826;"></article>
+				<article id="foundations_2" class="cards" data-default="&#9828;"></article>
+				<article id="foundations_3" class="cards" data-default="&#9831;"></article>
+			</section>
+			<section id="deck">
+				<article id="talon" class="cards"></article>
+				<article id="stock" class="cards" data-default="+"></article>
+			</section>
+		</aside>
+		<section id="tableau">
+			<article id="tableau_0" class="cards"></article>
+			<article id="tableau_1" class="cards"></article>
+			<article id="tableau_2" class="cards"></article>
+			<article id="tableau_3" class="cards"></article>
+			<article id="tableau_4" class="cards"></article>
+			<article id="tableau_5" class="cards"></article>
+			<article id="tableau_6" class="cards"></article>
+		</section>
+	</main>
+</body>
+</html>

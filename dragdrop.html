@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+
+	<style>	
+		.container {
+		    float: left;
+		    width: 48%;
+		    margin-right: 2%;
+		    padding: 10px;
+		    min-height: 300px;
+		    background-color: rgba(0, 0, 0, 0.2);
+		    transition: opacity 0.4s ease-in-out;
+		    cursor: move;
+		    cursor: grab;
+		    cursor: -moz-grab;
+		    cursor: -webkit-grab;
+		    box-sizing: border-box;
+		}
+		
+		.container div {
+		    padding: 10px 15px;
+		    margin: 10px 0;
+		    background-color: rgba(0, 0, 0, 0.2);
+		}
+
+	</style>
+</head>
+<body>
+	
+	<ol class="container cards" id="left">
+	    <li>One</li>
+	    <li>Two</li>
+	    <li>Three</li>
+	    <li>Four</li>
+	    <li>Five</li>
+	    <li>Six</li>
+	    <li>Seven</li>
+	</ol>
+	<ol class="container cards">
+		<li>Eight</li>
+	    <li>Nine</li>
+	    <li>Ten</li>
+	</ol>
+	<ol class="container cards right" id="right"></ol>
+	<ol class="container cards right"></ol>
+	
+	<script src="/js/dragdrop.js"></script>
+	<script>
+
+	function $(q,p=document){
+	  var result = [];
+	  var nodes = p.querySelectorAll(q);
+	  for(var idx=0;idx<nodes.length;idx++){
+	    result.push(nodes[idx]);
+	  }
+	  return result;
+	}
+
+	DragDrop.set($('ol.cards li'),$('ol.cards'))
+		.on('drag',function(){ console.log('in drag');
+			var result = true;
+			return result;
+		})
+		.on('target',function(){ console.log('over target');
+			var result = true;
+			return result;
+		})
+		.on('drop',function(){ console.log('in drop')
+			var result = true;
+			return result;
+		});
+
+
+	</script>
+</body>
+</html>
